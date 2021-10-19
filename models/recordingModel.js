@@ -5,6 +5,9 @@ const recordingSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: 'User'
     },
+    currentHeight: {
+        type: String
+    },
     currentWeight: {
         type: Number
     },
@@ -15,6 +18,9 @@ const recordingSchema = new mongoose.Schema({
     bodyFat: {
         type: Number
     },
+    BMI: {
+        type: String
+    },
     recordingDate: {
         type: Date,
         default: Date.now()
@@ -23,6 +29,11 @@ const recordingSchema = new mongoose.Schema({
 
 recordingSchema.pre(/^find/, function () {
     this.populate('statisticFor')
+})
+
+recordingSchema.pre('save', function () {
+    // CALCULATING BMI
+    this.BMI = Number(this.currentWeight / (+this.currentHeight * +this.currentHeight) * 10000).toFixed(1)
 })
 
 const Recording = mongoose.model('Recording', recordingSchema)

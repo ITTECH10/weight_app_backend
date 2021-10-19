@@ -10,7 +10,17 @@ router.route('/signup')
 router.route('/login')
     .post(authController.login)
 
+// BELLOW ROUTES ARE PROTECTED
+router.use(authController.protect)
+
+router.route('/')
+    .get(userController.getAllUsers)
+
+router.route('/me')
+    .get(userController.getMe)
+
 router.route('/record')
     .post(userController.recordStatistics)
+    .get(userController.getMostRecentAndInitialRecording)
 
 module.exports = router

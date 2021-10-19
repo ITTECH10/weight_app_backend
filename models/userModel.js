@@ -2,12 +2,19 @@ const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
 
 const userSchema = new mongoose.Schema({
+    firstName: {
+        type: String
+    },
+    lastName: {
+        type: String
+    },
     email: {
         unique: true,
         type: String
     },
     password: {
-        type: String
+        type: String,
+        select: false
     },
     confirmPassword: {
         type: String,
@@ -17,6 +24,14 @@ const userSchema = new mongoose.Schema({
             },
             message: 'Password do not match!'
         }
+    },
+    weightGoal: {
+        type: Number,
+        default: 0
+    },
+    bodyFatGoal: {
+        type: Number,
+        default: 0
     }
 })
 
