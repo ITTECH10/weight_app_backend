@@ -23,4 +23,7 @@ router.route('/record')
     .post(userController.recordStatistics)
     .get(userController.getMostRecentAndInitialRecording)
 
+router.route('/goals')
+    .put(userController.setWeightAndBodyFatGoal)
+
 module.exports = router
