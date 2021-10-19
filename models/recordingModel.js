@@ -24,6 +24,9 @@ const recordingSchema = new mongoose.Schema({
     recordingDate: {
         type: Date,
         default: Date.now()
+    },
+    recordingNote: {
+        type: String
     }
 })
 

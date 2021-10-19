@@ -85,3 +85,19 @@ exports.setWeightAndBodyFatGoal = catchAsync(async (req, res, next) => {
         user
     })
 })
+
+exports.takeRecordingNote = catchAsync(async (req, res, next) => {
+    const recording = await Recording.findOne({ _id: req.params.recordingId })
+
+    if (!recording) {
+        return next(new AppError('Recording does not exist', 404))
+    }
+
+    recording.recordingNote = req.body.recordingNote || recording.recordingNote
+    await recording.save({ validateBeforeSave: false })
+
+    res.status(200).json({
+        message: 'success',
+        recording
+    })
+})

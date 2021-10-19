@@ -26,4 +26,7 @@ router.route('/record')
 router.route('/goals')
     .put(userController.setWeightAndBodyFatGoal)
 
+router.route('/recording/:recordingId')
+    .put(userController.takeRecordingNote)
+
 module.exports = router
