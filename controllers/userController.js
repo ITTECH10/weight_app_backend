@@ -2,6 +2,7 @@ const catchAsync = require('./../utils/catchAsync')
 const AppError = require('./../utils/appError')
 const Recording = require('../models/recordingModel')
 const User = require('../models/userModel')
+const DateGenerator = require('../utils/DateGenerator')
 
 exports.getAllUsers = catchAsync(async (req, res, next) => {
     const users = await User.find()
@@ -103,5 +104,17 @@ exports.takeRecordingNote = catchAsync(async (req, res, next) => {
     res.status(200).json({
         message: 'success',
         recording
+    })
+})
+
+exports.getWeeklyRecordings = catchAsync(async (req, res, next) => {
+    const today = new Date()
+    const weekInPast = new DateGenerator().daysInPast(7)
+
+    const weeklyRecordings = await Recording.find({ recordingDate: { $lte: today, $gte: weekInPast } }).sort({ _id: 1 })
+
+    res.status(200).json({
+        message: 'success',
+        weeklyRecordings
     })
 })

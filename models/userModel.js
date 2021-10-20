@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
+const AppError = require('./../utils/appError')
 
 const userSchema = new mongoose.Schema({
     firstName: {
@@ -17,13 +18,7 @@ const userSchema = new mongoose.Schema({
         select: false
     },
     confirmPassword: {
-        type: String,
-        validate: {
-            validator: function (val) {
-                return val === this.password
-            },
-            message: 'Password do not match!'
-        }
+        type: String
     },
     weightGoal: {
         type: Number,

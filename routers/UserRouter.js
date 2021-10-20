@@ -19,6 +19,9 @@ router.route('/')
 router.route('/recordings')
     .get(userController.getUserRelatedRecordings)
 
+router.route('/recordings/weekly')
+    .get(userController.getWeeklyRecordings)
+
 router.route('/me')
     .get(userController.getMe)
 
