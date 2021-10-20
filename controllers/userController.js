@@ -48,6 +48,10 @@ exports.recordStatistics = catchAsync(async (req, res, next) => {
 exports.getUserRelatedRecordings = catchAsync(async (req, res, next) => {
     const recordings = await Recording.find({ statisticFor: req.user._id })
 
+    if (!recordings) {
+        return next(new AppError('There were no recordings found for your account.', 404))
+    }
+
     res.status(200).json({
         message: 'success',
         recordings

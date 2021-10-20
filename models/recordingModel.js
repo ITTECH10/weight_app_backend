@@ -6,20 +6,24 @@ const recordingSchema = new mongoose.Schema({
         ref: 'User'
     },
     currentHeight: {
-        type: String
+        type: String,
+        default: '170'
     },
     currentWeight: {
-        type: Number
+        type: Number,
+        default: 0
     },
     weightUnit: {
         type: String,
         default: 'kg'
     },
     bodyFat: {
-        type: Number
+        type: Number,
+        default: 15
     },
     BMI: {
-        type: String
+        type: String,
+        default: 0
     },
     recordingDate: {
         type: Date,

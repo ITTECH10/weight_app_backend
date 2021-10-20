@@ -16,6 +16,9 @@ router.use(authController.protect)
 router.route('/')
     .get(userController.getAllUsers)
 
+router.route('/recordings')
+    .get(userController.getUserRelatedRecordings)
+
 router.route('/me')
     .get(userController.getMe)
 
