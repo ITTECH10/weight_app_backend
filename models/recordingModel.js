@@ -22,7 +22,7 @@ const recordingSchema = new mongoose.Schema({
         default: 15
     },
     BMI: {
-        type: String,
+        type: Number,
         default: 0
     },
     recordingDate: {

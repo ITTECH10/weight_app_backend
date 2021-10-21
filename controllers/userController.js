@@ -118,3 +118,41 @@ exports.getWeeklyRecordings = catchAsync(async (req, res, next) => {
         weeklyRecordings
     })
 })
+
+exports.getAverageMontlyRecordings = catchAsync(async (req, res, next) => {
+    const currentMonth = new Date().getMonth() + 1
+
+    const averageMonthlyRecordings = await Recording.aggregate([
+        {
+            $match: { statisticFor: req.user._id }
+        },
+        {
+            $group: {
+                _id: { $month: '$recordingDate' },
+                averageWeight: { $avg: '$currentWeight' },
+                averageBMI: { $avg: '$BMI' },
+                averageBodyFat: { $avg: '$bodyFat' }
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                month: '$_id',
+                averageWeight: { $round: ['$averageWeight', 1] },
+                averageBMI: { $round: ['$averageBMI', 1] },
+                averageBodyFat: { $round: ['$averageBodyFat', 1] }
+            }
+        },
+        {
+            $sort: { month: 1 }
+        },
+        {
+            $match: { month: { $lte: currentMonth, $gte: (currentMonth - 4) } }
+        }
+    ])
+
+    res.status(200).json({
+        message: 'success',
+        averageMonthlyRecordings
+    })
+})

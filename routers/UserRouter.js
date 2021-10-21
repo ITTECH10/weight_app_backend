@@ -22,6 +22,9 @@ router.route('/recordings')
 router.route('/recordings/weekly')
     .get(userController.getWeeklyRecordings)
 
+router.route('/recordings/monthly')
+    .get(userController.getAverageMontlyRecordings)
+
 router.route('/me')
     .get(userController.getMe)
 
