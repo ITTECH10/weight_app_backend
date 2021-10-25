@@ -27,6 +27,10 @@ router.route('/recordings/monthly')
 
 router.route('/me')
     .get(userController.getMe)
+    .delete(userController.deleteProfile)
+
+router.route('/me/edit')
+    .put(userController.editProfile)
 
 router.route('/record')
     .post(userController.recordStatistics)

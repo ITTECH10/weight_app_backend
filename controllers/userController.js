@@ -30,6 +30,33 @@ exports.getMe = catchAsync(async (req, res, next) => {
     })
 })
 
+exports.editProfile = catchAsync(async (req, res, next) => {
+    const user = await User.findById(req.user._id)
+
+    if (!user) {
+        return next(new AppError('Editing profile failed, user does not exist in our db.', 404))
+    }
+
+    user.firstName = req.body.firstName || user.firstName
+    user.lastName = req.body.lastName || user.lastName
+    user.gender = req.body.gender || user.gender
+    await user.save({ validateBeforeSave: false })
+
+    res.status(200).json({
+        message: 'success',
+        user
+    })
+})
+
+exports.deleteProfile = catchAsync(async (req, res, next) => {
+    await User.findByIdAndDelete(req.user._id)
+    await Recording.deleteMany({ statisticFor: req.user._id })
+
+    res.status(204).json({
+        message: 'success'
+    })
+})
+
 exports.recordStatistics = catchAsync(async (req, res, next) => {
     const recording = await Recording.create({
         statisticFor: req.user._id,
