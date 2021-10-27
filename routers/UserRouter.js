@@ -1,6 +1,7 @@
 const express = require('express')
 const authController = require('./../controllers/authController')
 const userController = require('./../controllers/userController')
+const bodyPartsController = require('./../controllers/bodyPartsController')
 
 const router = express.Router()
 
@@ -19,8 +20,18 @@ router.route('/')
 router.route('/recordings')
     .get(userController.getUserRelatedRecordings)
 
+router.route('/circumferences')
+    .post(bodyPartsController.recordCircumferences)
+    .get(bodyPartsController.getCustomerBodyPartMeasurements)
+
+router.route('/circumferences/initial/recent')
+    .get(bodyPartsController.getMostRecentAndInitialBodyPartMeasure)
+
 router.route('/recordings/weekly')
     .get(userController.getWeeklyRecordings)
+
+router.route('/circumferences/weekly')
+    .get(bodyPartsController.getWeeklyBodyPartRecordings)
 
 router.route('/recordings/monthly')
     .get(userController.getAverageMontlyRecordings)
