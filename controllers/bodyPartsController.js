@@ -64,3 +64,59 @@ exports.getMostRecentAndInitialBodyPartMeasure = catchAsync(async (req, res, nex
         initialBodyPartMeasure
     })
 })
+
+exports.getAverageMonthlyBodyPartDimensions = catchAsync(async (req, res, next) => {
+    const currentMonth = new Date().getMonth() + 1
+
+    const averageMonthlyRecordings = await BodyPartMeasurement.aggregate([
+        {
+            $match: { statisticFor: req.user._id }
+        },
+        {
+            $group: {
+                _id: { $month: '$recordingDate' },
+                averageNeckDimension: { $avg: '$neck' },
+                averageShoulderDimension: { $avg: '$shoulder' },
+                averageBustDimension: { $avg: '$bust' },
+                averageWaistDimension: { $avg: '$waist' },
+                averageAbdomenDimension: { $avg: '$abdomen' },
+                averageHipDimension: { $avg: '$hip' },
+                averageLeftBicepsDimension: { $avg: '$leftBiceps' },
+                averageRightBicepsDimension: { $avg: '$rightBiceps' },
+                averageLeftThighDimension: { $avg: '$leftThigh' },
+                averageRightThighDimension: { $avg: '$rightThigh' },
+                averageLeftCalfDimension: { $avg: '$leftCalf' },
+                averageRightCalfDimension: { $avg: '$rightCalf' },
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                month: '$_id',
+                averageNeckDimension: { $round: ['$averageNeckDimension', 1] },
+                averageShoulderDimension: { $round: ['$averageShoulderDimension', 1] },
+                averageBustDimension: { $round: ['$averageBustDimension', 1] },
+                averageWaistDimension: { $round: ['$averageWaistDimension', 1] },
+                averageAbdomenDimension: { $round: ['$averageAbdomenDimension', 1] },
+                averageHipDimension: { $round: ['$averageHipDimension', 1] },
+                averageLeftBicepsDimension: { $round: ['$averageLeftBicepsDimension', 1] },
+                averageRightBicepsDimension: { $round: ['$averageRightBicepsDimension', 1] },
+                averageLeftThighDimension: { $round: ['$averageLeftThighDimension', 1] },
+                averageRightThighDimension: { $round: ['$averageRightThighDimension', 1] },
+                averageLeftCalfDimension: { $round: ['$averageLeftCalfDimension', 1] },
+                averageRightCalfDimension: { $round: ['$averageRightCalfDimension', 1] }
+            }
+        },
+        {
+            $sort: { month: 1 }
+        },
+        {
+            $match: { month: { $lte: currentMonth, $gte: (currentMonth - 4) } }
+        }
+    ])
+
+    res.status(200).json({
+        message: 'success',
+        averageMonthlyRecordings
+    })
+})

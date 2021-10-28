@@ -33,6 +33,9 @@ router.route('/recordings/weekly')
 router.route('/circumferences/weekly')
     .get(bodyPartsController.getWeeklyBodyPartRecordings)
 
+router.route('/circumferences/monthly')
+    .get(bodyPartsController.getAverageMonthlyBodyPartDimensions)
+
 router.route('/recordings/monthly')
     .get(userController.getAverageMontlyRecordings)
 

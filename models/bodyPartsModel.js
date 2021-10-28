@@ -5,40 +5,40 @@ const bodyPartsSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId
     },
     neck: {
-        type: String
+        type: Number
     },
     shoulder: {
-        type: String
+        type: Number
     },
     bust: {
-        type: String
+        type: Number
     },
     waist: {
-        type: String
+        type: Number
     },
     abdomen: {
-        type: String
+        type: Number
     },
     hip: {
-        type: String
+        type: Number
     },
     leftBiceps: {
-        type: String
+        type: Number
     },
     rightBiceps: {
-        type: String
+        type: Number
     },
     leftThigh: {
-        type: String
+        type: Number
     },
     rightThigh: {
-        type: String
+        type: Number
     },
     leftCalf: {
-        type: String
+        type: Number
     },
     rightCalf: {
-        type: String
+        type: Number
     },
     recordingDate: {
         type: Date,
