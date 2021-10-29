@@ -11,6 +11,12 @@ router.route('/signup')
 router.route('/login')
     .post(authController.login)
 
+router.route('/me/forgotPassword')
+    .post(userController.forgotPassword)
+
+router.route('/me/resetPassword')
+    .post(userController.resetPassword)
+
 // BELLOW ROUTES ARE PROTECTED
 router.use(authController.protect)
 

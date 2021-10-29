@@ -42,7 +42,7 @@ exports.getWeeklyBodyPartRecordings = catchAsync(async (req, res, next) => {
     const today = new Date()
     const weekInPast = new DateGenerator().daysInPast(7)
 
-    const weeklyRecordings = await BodyPartMeasurement.find({ recordingDate: { $lte: today, $gte: weekInPast } }).sort({ _id: 1 })
+    const weeklyRecordings = await BodyPartMeasurement.find({ statisticFor: req.user._id, recordingDate: { $lte: today, $gte: weekInPast } }).sort({ _id: 1 })
 
     res.status(200).json({
         message: 'success',

@@ -3,6 +3,9 @@ const AppError = require('./../utils/appError')
 const Recording = require('../models/recordingModel')
 const User = require('../models/userModel')
 const DateGenerator = require('../utils/DateGenerator')
+const EmailNotifications = require('./../services/EMAIL/EmailNotifications')
+const signToken = require('./../utils/signToken')
+const crypto = require('crypto')
 
 exports.getAllUsers = catchAsync(async (req, res, next) => {
     const users = await User.find()
@@ -138,7 +141,7 @@ exports.getWeeklyRecordings = catchAsync(async (req, res, next) => {
     const today = new Date()
     const weekInPast = new DateGenerator().daysInPast(7)
 
-    const weeklyRecordings = await Recording.find({ recordingDate: { $lte: today, $gte: weekInPast } }).sort({ _id: 1 })
+    const weeklyRecordings = await Recording.find({ statisticFor: req.user._id, recordingDate: { $lte: today, $gte: weekInPast } }).sort({ _id: 1 })
 
     res.status(200).json({
         message: 'success',
@@ -183,3 +186,58 @@ exports.getAverageMontlyRecordings = catchAsync(async (req, res, next) => {
         averageMonthlyRecordings
     })
 })
+
+exports.forgotPassword = catchAsync(async (req, res, next) => {
+    const user = await User.findOne({ email: req.body.email })
+
+    if (!user) {
+        return next(new AppError('Customer associated with this email does not exist.', 404))
+    }
+
+    const resetToken = user.createPasswordResetToken()
+
+    const resetURL = resetToken
+    await user.save({ validateBeforeSave: false })
+
+    try {
+        await new EmailNotifications().sendPasswordResetToken(user, resetURL)
+
+        res.status(200).json({
+            message: 'success'
+        })
+
+    } catch (err) {
+        console.log(err)
+        user.passwordResetToken = undefined;
+        user.passwordResetTokenExpiresIn = undefined;
+        await user.save({ validateBeforeSave: false })
+
+        return next(new AppError('There was an error sending the email. Please try again later.', 500))
+    }
+})
+
+exports.resetPassword = catchAsync(async (req, res, next) => {
+    const encryptedToken = crypto.createHash('sha256').update(req.body.token).digest('hex');
+
+    const user = await User.findOne({
+        passwordResetToken: encryptedToken,
+        passwordResetTokenExpiresIn: { $gt: Date.now() }
+    });
+
+    if (!user) {
+        return next(new AppError('Token is invalid or it is expired.', 400));
+    }
+
+    user.password = req.body.password;
+    user.passwordResetToken = undefined;
+    user.passwordResetTokenExpiresIn = undefined;
+
+    await user.save({ validateBeforeSave: true });
+
+    const token = signToken(user._id)
+
+    res.status(200).json({
+        message: 'success',
+        token
+    })
+});
